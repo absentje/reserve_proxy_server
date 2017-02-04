@@ -8,45 +8,45 @@
 using namespace std;
 
 
-// функция проверяющая правильность введенных логин + пароль
+// С„СѓРЅРєС†РёСЏ РїСЂРѕРІРµСЂСЏСЋС‰Р°СЏ РїСЂР°РІРёР»СЊРЅРѕСЃС‚СЊ РІРІРµРґРµРЅРЅС‹С… Р»РѕРіРёРЅ + РїР°СЂРѕР»СЊ
 bool conn_user(const char user[], const char passwd[])
 {
-	MYSQL mysql; // Дескриптор соединения
-	mysql_init(&mysql);  // Инициализация
+	MYSQL mysql; // Р”РµСЃРєСЂРёРїС‚РѕСЂ СЃРѕРµРґРёРЅРµРЅРёСЏ
+	mysql_init(&mysql);  // РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ
 	if (mysql_real_connect(&mysql, "localhost", user, passwd, "", 3306, NULL, 0)) {
 		return true;
 	}
 	else
 		return false;
 }
-// функция обращающаяся к БД с запросом
+// С„СѓРЅРєС†РёСЏ РѕР±СЂР°С‰Р°СЋС‰Р°СЏСЃСЏ Рє Р‘Р” СЃ Р·Р°РїСЂРѕСЃРѕРј
 void mysql_function(const char query[],
 	const char host[] = "localhost", const char user[] = "admin", const char passwd[] = "passwd123321",
-	const char db[] = "cpp_data", const int port = 3306) // host[]-хост, user[]-пользователь, passwd[]-пароль, 
-														 // library[]-название бд, port-порт
+	const char db[] = "cpp_data", const int port = 3306) // host[]-С…РѕСЃС‚, user[]-РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ, passwd[]-РїР°СЂРѕР»СЊ, 
+														 // library[]-РЅР°Р·РІР°РЅРёРµ Р±Рґ, port-РїРѕСЂС‚
 {
 	const char resultOfQuery[] = "resultOfQuery.txt";
-	ofstream fout(resultOfQuery); // рез-т запроса выведется в этот файл
-	if (!fout.is_open()) // если файл небыл открыт
+	ofstream fout(resultOfQuery); // СЂРµР·-С‚ Р·Р°РїСЂРѕСЃР° РІС‹РІРµРґРµС‚СЃСЏ РІ СЌС‚РѕС‚ С„Р°Р№Р»
+	if (!fout.is_open()) // РµСЃР»Рё С„Р°Р№Р» РЅРµР±С‹Р» РѕС‚РєСЂС‹С‚
 	{
-		throw 1; // ошибка при открытии файла
+		throw 1; // РѕС€РёР±РєР° РїСЂРё РѕС‚РєСЂС‹С‚РёРё С„Р°Р№Р»Р°
 	}
 	MYSQL mysql;
 	MYSQL_RES *res;
 	MYSQL_ROW row;
 	mysql_init(&mysql);
 	mysql_real_connect(&mysql, host, user, passwd, db, port, NULL, 0);
-	if (mysql_query(&mysql, query) > 0) // запрос. Если ошибок нет, то продолжаем работу
+	if (mysql_query(&mysql, query) > 0) // Р·Р°РїСЂРѕСЃ. Р•СЃР»Рё РѕС€РёР±РѕРє РЅРµС‚, С‚Рѕ РїСЂРѕРґРѕР»Р¶Р°РµРј СЂР°Р±РѕС‚Сѓ
 	{
-		// Если была ошибка, ...
-		fout << mysql_error(&mysql);	// ... выведем ее
-		return; // и завершим работу
+		// Р•СЃР»Рё Р±С‹Р»Р° РѕС€РёР±РєР°, ...
+		fout << mysql_error(&mysql);	// ... РІС‹РІРµРґРµРј РµРµ
+		return; // Рё Р·Р°РІРµСЂС€РёРј СЂР°Р±РѕС‚Сѓ
 	}
-	res = mysql_store_result(&mysql); // Берем результат,
-	int num_fields = mysql_num_fields(res); // количество полей
-	long long num_rows = mysql_num_rows(res); // и количество строк.
-	size_t t = 0; // счетчик для второй строки, заполненной '-'
-	for (int i = 0; i < num_fields; i++) // Выводим названия полей
+	res = mysql_store_result(&mysql); // Р‘РµСЂРµРј СЂРµР·СѓР»СЊС‚Р°С‚,
+	int num_fields = mysql_num_fields(res); // РєРѕР»РёС‡РµСЃС‚РІРѕ РїРѕР»РµР№
+	long long num_rows = mysql_num_rows(res); // Рё РєРѕР»РёС‡РµСЃС‚РІРѕ СЃС‚СЂРѕРє.
+	size_t t = 0; // СЃС‡РµС‚С‡РёРє РґР»СЏ РІС‚РѕСЂРѕР№ СЃС‚СЂРѕРєРё, Р·Р°РїРѕР»РЅРµРЅРЅРѕР№ '-'
+	for (int i = 0; i < num_fields; i++) // Р’С‹РІРѕРґРёРј РЅР°Р·РІР°РЅРёСЏ РїРѕР»РµР№
 	{
 		char *field_name = mysql_fetch_field_direct(res, i)->name;
 		fout << setw(strlen(field_name) + 3) << field_name << " |";
@@ -54,23 +54,23 @@ void mysql_function(const char query[],
 	}
 
 	fout << '\n';
-	for (int i = 0; i < t; i++) {	// отделяем шапку таблицы от данных
+	for (int i = 0; i < t; i++) {	// РѕС‚РґРµР»СЏРµРј С€Р°РїРєСѓ С‚Р°Р±Р»РёС†С‹ РѕС‚ РґР°РЅРЅС‹С…
 		fout << '-';
 	}
 	fout << '\n';
 
-	for (int i = 0; i < num_rows; i++) // Вывод таблицы
+	for (int i = 0; i < num_rows; i++) // Р’С‹РІРѕРґ С‚Р°Р±Р»РёС†С‹
 	{
-		row = mysql_fetch_row(res); // получаем строку
+		row = mysql_fetch_row(res); // РїРѕР»СѓС‡Р°РµРј СЃС‚СЂРѕРєСѓ
 		for (int l = 0; l < num_fields; l++) {
-			char *field_name = mysql_fetch_field_direct(res, l)->name; // необходимо для выравнивания рез-та
+			char *field_name = mysql_fetch_field_direct(res, l)->name; // РЅРµРѕР±С…РѕРґРёРјРѕ РґР»СЏ РІС‹СЂР°РІРЅРёРІР°РЅРёСЏ СЂРµР·-С‚Р°
 			fout << setw(strlen(field_name) + 3) << row[l] << " |";
 		}
 		fout << "\n";
 	}
-	fout << "Count records = " << num_rows; // Вывод информации о количестве записей
-	mysql_free_result(res); // очищаем результаты
-	mysql_close(&mysql); // закрываем соединение
-	fout.close(); // закрываем файл
+	fout << "Count records = " << num_rows; // Р’С‹РІРѕРґ РёРЅС„РѕСЂРјР°С†РёРё Рѕ РєРѕР»РёС‡РµСЃС‚РІРµ Р·Р°РїРёСЃРµР№
+	mysql_free_result(res); // РѕС‡РёС‰Р°РµРј СЂРµР·СѓР»СЊС‚Р°С‚С‹
+	mysql_close(&mysql); // Р·Р°РєСЂС‹РІР°РµРј СЃРѕРµРґРёРЅРµРЅРёРµ
+	fout.close(); // Р·Р°РєСЂС‹РІР°РµРј С„Р°Р№Р»
 }
 
