@@ -9,14 +9,14 @@
 #include <cstddef>
 using namespace std;
 
-// функция проверяющая правильность введенных логин + пароль
+// С„СѓРЅРєС†РёСЏ РїСЂРѕРІРµСЂСЏСЋС‰Р°СЏ РїСЂР°РІРёР»СЊРЅРѕСЃС‚СЊ РІРІРµРґРµРЅРЅС‹С… Р»РѕРіРёРЅ + РїР°СЂРѕР»СЊ
 bool conn_user(const char user[], const char passwd[]);
-// функция обращающаяся к БД с запросом
+// С„СѓРЅРєС†РёСЏ РѕР±СЂР°С‰Р°СЋС‰Р°СЏСЃСЏ Рє Р‘Р” СЃ Р·Р°РїСЂРѕСЃРѕРј
 
 void mysql_function(const char query[],
 	const char host[] = "localhost", const char user[] = "admin", const char passwd[] = "passwd123321",
-	const char db[] = "cpp_data", const int port = 3306); // host[]-хост, user[]-пользователь, passwd[]-пароль, 
-										 // library[]-название бд, port-порт
+	const char db[] = "cpp_data", const int port = 3306); // host[]-С…РѕСЃС‚, user[]-РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ, passwd[]-РїР°СЂРѕР»СЊ, 
+										 // library[]-РЅР°Р·РІР°РЅРёРµ Р±Рґ, port-РїРѕСЂС‚
 
 
 #endif MYSQL_FUNCTION_H
