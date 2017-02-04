@@ -216,8 +216,6 @@ int main(int argc, char* argv[])
 		int port;
 		cin >> port;
 		boost::asio::io_service io_service;
-
-		using namespace std; // For atoi.
 		Server s(io_service, port);
 
 		io_service.run();
