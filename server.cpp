@@ -43,7 +43,7 @@ public:
 
 private:
 	void handle_first_read(const boost::system::error_code& error, size_t bytes_transferred)
-	{						//считываем и проверяем правильность введенных логин+пароль
+	{						//Г±Г·ГЁГІГ»ГўГ ГҐГ¬ ГЁ ГЇГ°Г®ГўГҐГ°ГїГҐГ¬ ГЇГ°Г ГўГЁГ«ГјГ­Г®Г±ГІГј ГўГўГҐГ¤ГҐГ­Г­Г»Гµ Г«Г®ГЈГЁГ­+ГЇГ Г°Г®Г«Гј
 		if (!error)
 		{
 			int ii = 0, length_login = 0, length_passwd = 0;
@@ -112,7 +112,7 @@ private:
 			strcpy(data_base, data_);
 			mysql_function(query, "localhost", login_, passwd_, data_base, 3306);
 			ifstream fin(resultOfQuery);
-			if (!fin.is_open()) // если файл не открыт
+			if (!fin.is_open()) // ГҐГ±Г«ГЁ ГґГ Г©Г« Г­ГҐ Г®ГІГЄГ°Г»ГІ
 				delete this;
 			else {
 				int ii = 0;
@@ -212,12 +212,10 @@ int main(int argc, char* argv[])
 	setlocale(LC_CTYPE, "Russian");
 	try
 	{
-		cout << "Введите порт открываемого сервера :\n";
+		cout << "Г‚ГўГҐГ¤ГЁГІГҐ ГЇГ®Г°ГІ Г®ГІГЄГ°Г»ГўГ ГҐГ¬Г®ГЈГ® Г±ГҐГ°ГўГҐГ°Г  :\n";
 		int port;
 		cin >> port;
 		boost::asio::io_service io_service;
-
-		using namespace std; // For atoi.
 		Server s(io_service, port);
 
 		io_service.run();
