@@ -18,7 +18,7 @@ using namespace boost::asio;
 
 class client {
 public:
-	//конструктор
+	//РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ
 	client(boost::asio::io_service& io_service)
 		: socket_(io_service)
 	{
@@ -27,9 +27,9 @@ public:
 		const int MAX_IP_PORT = 20;
 		char ip[MAX_IP_PORT], port[MAX_IP_PORT];
 		//int port;
-		cout << "Введите ip адрес сервера :\n";
+		cout << "Р’РІРµРґРёС‚Рµ ip Р°РґСЂРµСЃ СЃРµСЂРІРµСЂР° :\n";
 		gets(ip);
-		cout << "Введите порт сервера :\n";
+		cout << "Р’РІРµРґРёС‚Рµ РїРѕСЂС‚ СЃРµСЂРІРµСЂР° :\n";
 		gets(port);
 		ip::tcp::endpoint ep(ip::address::from_string(ip), atoi(port));
 		socket_.async_connect(ep, boost::bind(&client::connect_handler, this,
@@ -39,12 +39,12 @@ private:
 	void connect_handler(const boost::system::error_code & error)
 	{
 		if (!error) {
-			cout << "Введите логин пользователя :\n";
+			cout << "Р’РІРµРґРёС‚Рµ Р»РѕРіРёРЅ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ :\n";
 			gets(data_);
 			int length_buff = strlen(data_);
-			data_[length_buff] = ' '; // отделяем логин от пароля
+			data_[length_buff] = ' '; // РѕС‚РґРµР»СЏРµРј Р»РѕРіРёРЅ РѕС‚ РїР°СЂРѕР»СЏ
 			length_buff++;
-			cout << "Введите пароль :\n";
+			cout << "Р’РІРµРґРёС‚Рµ РїР°СЂРѕР»СЊ :\n";
 			gets(&data_[length_buff], max_length_data - length_buff);
 			cout << '\n';
 			length_buff = strlen(data_);
@@ -59,8 +59,8 @@ private:
 		}
 	}
 	void handle_first_write(const boost::system::error_code& error) {
-		if (!error)													// получаем ответ от сервера
-		{															// о правильности логина и пароля
+		if (!error)													// РїРѕР»СѓС‡Р°РµРј РѕС‚РІРµС‚ РѕС‚ СЃРµСЂРІРµСЂР°
+		{															// Рѕ РїСЂР°РІРёР»СЊРЅРѕСЃС‚Рё Р»РѕРіРёРЅР° Рё РїР°СЂРѕР»СЏ
 			socket_.async_read_some(boost::asio::buffer(data_, max_length_data),
 				boost::bind(&client::handle_first_read, this,
 					boost::asio::placeholders::error,
@@ -73,11 +73,11 @@ private:
 	void handle_first_read(const boost::system::error_code& error, size_t bytes_transferred){
 		if (!error)
 		{
-			int answer = atoi(data_); // 1 - логин и пароль верны, 0 - неверны
+			int answer = atoi(data_); // 1 - Р»РѕРіРёРЅ Рё РїР°СЂРѕР»СЊ РІРµСЂРЅС‹, 0 - РЅРµРІРµСЂРЅС‹
 			if (answer)
 				handle_read(error, 0);
 			else {
-				cout << "Неправильные логин или пароль.\n";
+				cout << "РќРµРїСЂР°РІРёР»СЊРЅС‹Рµ Р»РѕРіРёРЅ РёР»Рё РїР°СЂРѕР»СЊ.\n";
 				socket_.close();
 				start_connection();
 			}
@@ -106,16 +106,16 @@ private:
 		{
 			if(bytes_transferred)
 				cout << data_ << '\n';
-			cout << "Введите название базы данных(введите \"quit\" для выхода) :\n";
+			cout << "Р’РІРµРґРёС‚Рµ РЅР°Р·РІР°РЅРёРµ Р±Р°Р·С‹ РґР°РЅРЅС‹С…(РІРІРµРґРёС‚Рµ \"quit\" РґР»СЏ РІС‹С…РѕРґР°) :\n";
 			gets(data_);
 			int length_buff = strlen(data_);
 			data_[length_buff] = 0;
 			if (!strcmp(data_, "quit")) {
 				throw 0;
 			}
-			data_[length_buff] = ' '; // отделяем название бд от запроса
+			data_[length_buff] = ' '; // РѕС‚РґРµР»СЏРµРј РЅР°Р·РІР°РЅРёРµ Р±Рґ РѕС‚ Р·Р°РїСЂРѕСЃР°
 			length_buff++;
-			cout << "Введите запрос (';' - служит окончанием запроса) :\n";
+			cout << "Р’РІРµРґРёС‚Рµ Р·Р°РїСЂРѕСЃ (';' - СЃР»СѓР¶РёС‚ РѕРєРѕРЅС‡Р°РЅРёРµРј Р·Р°РїСЂРѕСЃР°) :\n";
 			while (true) {
 				bool Flag = false;
 				gets(&data_[length_buff], max_length_data - length_buff);
@@ -137,7 +137,7 @@ private:
 			}
 			cout << '\n';
 			if (length_buff == max_length_data) {
-				cout << "Ошибка. Переполнение буфера ввода.\n";
+				cout << "РћС€РёР±РєР°. РџРµСЂРµРїРѕР»РЅРµРЅРёРµ Р±СѓС„РµСЂР° РІРІРѕРґР°.\n";
 				throw 1;
 			}
 			data_[length_buff] = 0;
@@ -151,7 +151,7 @@ private:
 		}
 	}
 
-	//поля
+	//РїРѕР»СЏ
 	tcp::socket socket_;
 	enum { max_length_data = 5000 };
 	char data_[max_length_data];
