@@ -22,7 +22,7 @@ using boost::asio::ip::tcp;
 //					USER_SESSION
 /////////////////////////////////////////////////////////////////////
 
-// для проверки работы сервера введены пометки с выводом на экран (label)
+// РґР»СЏ РїСЂРѕРІРµСЂРєРё СЂР°Р±РѕС‚С‹ СЃРµСЂРІРµСЂР° РІРІРµРґРµРЅС‹ РїРѕРјРµС‚РєРё СЃ РІС‹РІРѕРґРѕРј РЅР° СЌРєСЂР°РЅ (label)
 
 class UserSession : public boost::enable_shared_from_this<UserSession> {
 public:
@@ -214,13 +214,13 @@ int main(int argc, char** argv) {
 	setlocale(LC_CTYPE, "Russian");
 	try
 	{
-		cout << "Введите порт открываемого прокси сервера :\n";
+		cout << "Р’РІРµРґРёС‚Рµ РїРѕСЂС‚ РѕС‚РєСЂС‹РІР°РµРјРѕРіРѕ РїСЂРѕРєСЃРё СЃРµСЂРІРµСЂР° :\n";
 		string port;
 		getline(cin, port);
-		cout << "Введите ip адрес сервера с БД :\n";
+		cout << "Р’РІРµРґРёС‚Рµ ip Р°РґСЂРµСЃ СЃРµСЂРІРµСЂР° СЃ Р‘Р” :\n";
 		string ip_proxy;
 		getline(cin, ip_proxy);
-		cout << "Введите порт сервера с БД :\n";
+		cout << "Р’РІРµРґРёС‚Рµ РїРѕСЂС‚ СЃРµСЂРІРµСЂР° СЃ Р‘Р” :\n";
 		string port_proxy;
 		getline(cin, port_proxy);
 		boost::asio::io_service io_service;
