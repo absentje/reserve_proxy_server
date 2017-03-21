@@ -19,13 +19,13 @@ int main(int argc, char** argv) {
 	setlocale(LC_CTYPE, "Russian");
 	try
 	{
-		cout << "Ââåäèòå ïîðò îòêðûâàåìîãî ïðîêñè ñåðâåðà :\n";
+		cout << "Ð’Ð²ÐµÐ´Ð¸Ñ‚Ðµ Ð¿Ð¾Ñ€Ñ‚ Ð¾Ñ‚ÐºÑ€Ñ‹Ð²Ð°ÐµÐ¼Ð¾Ð³Ð¾ Ð¿Ñ€Ð¾ÐºÑÐ¸ ÑÐµÑ€Ð²ÐµÑ€Ð° :\n";
 		string port;
 		getline(cin, port);
-		cout << "Ââåäèòå ip àäðåñ ñåðâåðà ñ ÁÄ :\n";
+		cout << "Ð’Ð²ÐµÐ´Ð¸Ñ‚Ðµ ip Ð°Ð´Ñ€ÐµÑ ÑÐµÑ€Ð²ÐµÑ€Ð° Ñ Ð‘Ð” :\n";
 		string ip_proxy;
 		getline(cin, ip_proxy);
-		cout << "Ââåäèòå ïîðò ñåðâåðà ñ ÁÄ :\n";
+		cout << "Ð’Ð²ÐµÐ´Ð¸Ñ‚Ðµ Ð¿Ð¾Ñ€Ñ‚ ÑÐµÑ€Ð²ÐµÑ€Ð° Ñ Ð‘Ð” :\n";
 		string port_proxy;
 		getline(cin, port_proxy);
 		boost::asio::io_service io_service;
