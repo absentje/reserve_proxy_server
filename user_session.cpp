@@ -1,6 +1,6 @@
 #include "user_session.h"
 
-// для проверки работы сервера введены пометки с выводом на экран (label)
+// РґР»СЏ РїСЂРѕРІРµСЂРєРё СЂР°Р±РѕС‚С‹ СЃРµСЂРІРµСЂР° РІРІРµРґРµРЅС‹ РїРѕРјРµС‚РєРё СЃ РІС‹РІРѕРґРѕРј РЅР° СЌРєСЂР°РЅ (label)
 
 UserSession::UserSession(boost::asio::io_service& io_service, boost::shared_ptr<ofstream> file)
 	:_client_socket(io_service),
