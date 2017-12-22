@@ -1,124 +1,125 @@
 #include "user_session.h"
+#include <boost/bind.hpp>
+#include <iostream>
 
-// для проверки работы сервера введены пометки с выводом на экран (label)
+using std::cerr;
+using std::endl;
+using namespace boost::asio;
+using boost::bind;
+using ErrorCode = boost::system::error_code;
+using std::size_t;
 
-UserSession::UserSession(boost::asio::io_service& io_service, boost::shared_ptr<ofstream> file)
+using boost::asio::ip::tcp;
+
+UserSession::UserSession(io_service& io_service, boost::shared_ptr<std::ofstream> file)
 	:_client_socket(io_service),
 	_proxy_socket(io_service),
 	_file_log(file)
 {}
 
-tcp::socket& UserSession::get_client_socket() {
+const tcp::socket& UserSession::get_client_socket() const noexcept {
+	return _client_socket;
+}
+tcp::socket& UserSession::get_client_socket() noexcept {
 	return _client_socket;
 }
 
-void UserSession::start(const std::string& proxy_ip, std::size_t proxy_port) {
+
+void UserSession::start(const std::string& proxy_ip, short proxy_port) noexcept {
 	_proxy_socket.async_connect(
-		tcp::endpoint(boost::asio::ip::address::from_string(proxy_ip), proxy_port),
-		boost::bind(&UserSession::handle_connect,
+		tcp::endpoint(ip::address::from_string(proxy_ip), proxy_port),
+		bind(&UserSession::handle_connect,
 			shared_from_this(),
-			boost::asio::placeholders::error));
+			placeholders::error));
 }
 
-void UserSession::handle_connect(const boost::system::error_code& error) {
+void UserSession::handle_connect(const ErrorCode& error) noexcept {
 	if (!error) {
-		cout << "handle_connect port_client: " << _client_socket.remote_endpoint().port() << "\n\n"; // (label)
-		_proxy_socket.async_read_some(boost::asio::buffer(_proxy_buffer, default_buffer_size),
-			boost::bind(&UserSession::handle_proxy_read,
+		_proxy_socket.async_read_some(buffer(_proxy_buffer, default_buffer_size),
+			bind(&UserSession::handle_proxy_read,
 				shared_from_this(),
-				boost::asio::placeholders::error,
-				boost::asio::placeholders::bytes_transferred));
+				placeholders::error,
+				placeholders::bytes_transferred));
 		_client_socket.async_read_some(
-			boost::asio::buffer(_client_buffer, default_buffer_size),
-			boost::bind(&UserSession::handle_client_read,
+			buffer(_client_buffer, default_buffer_size),
+			bind(&UserSession::handle_client_read,
 				shared_from_this(),
-				boost::asio::placeholders::error,
-				boost::asio::placeholders::bytes_transferred));
+				placeholders::error,
+				placeholders::bytes_transferred));
 	}
 	else {
-		cout << "error_handle_connect\n\n"; // (label)
 		cerr << error.message() << endl;
 		close();
 	}
 }
 
-void UserSession::handle_client_read(const boost::system::error_code& error, const std::size_t bytes_transferred) {
+void UserSession::handle_client_read(const ErrorCode& error, const size_t bytes_transferred) noexcept {
 	if (!error) {
-		cout << "handle_client_read port_client: " << _client_socket.remote_endpoint().port() << "\n\n"; // (label)
 		for (int i = 0; i < bytes_transferred; i++) {
 			*_file_log << _client_buffer[i];
 		}
 		*_file_log << '\n';
-		boost::asio::async_write(_proxy_socket,
-			boost::asio::buffer(_client_buffer, bytes_transferred),
-			boost::asio::transfer_all(),
-			boost::bind(&UserSession::handle_proxy_write,
+		async_write(_proxy_socket,
+			buffer(_client_buffer, bytes_transferred),
+			transfer_all(),
+			bind(&UserSession::handle_proxy_write,
 				shared_from_this(),
-				boost::asio::placeholders::error));
+				placeholders::error));
 	}
 	else {
-		cout << "error_handle_client_read\n\n"; // (label)
 		cerr << error.message() << endl;
 		close();
 	}
 }
 
-void UserSession::handle_proxy_write(const boost::system::error_code& error) {
+void UserSession::handle_proxy_write(const ErrorCode& error) noexcept {
 	if (!error) {
-		cout << "handle_proxy_write port_client:" << _client_socket.remote_endpoint().port() << "\n\n"; // (label)
-		_client_socket.async_read_some(boost::asio::buffer(_client_buffer, default_buffer_size),
-			boost::bind(&UserSession::handle_client_read,
+		_client_socket.async_read_some(buffer(_client_buffer, default_buffer_size),
+			bind(&UserSession::handle_client_read,
 				shared_from_this(),
-				boost::asio::placeholders::error,
-				boost::asio::placeholders::bytes_transferred));
+				placeholders::error,
+				placeholders::bytes_transferred));
 	}
 	else {
-		cout << "error_handle_proxy_write\n\n"; // (label)
 		cerr << error.message() << endl;
 		close();
 	}
 }
 
-void UserSession::handle_proxy_read(const boost::system::error_code& error, const std::size_t bytes_transferred) {
+void UserSession::handle_proxy_read(const ErrorCode& error, const std::size_t bytes_transferred) noexcept {
 	if (!error) {
-		cout << "handle_proxy_read port_client: " << _client_socket.remote_endpoint().port() << "\n\n"; // (label)
-		boost::asio::async_write(_client_socket,
-			boost::asio::buffer(_proxy_buffer, bytes_transferred),
-			boost::asio::transfer_all(),
-			boost::bind(&UserSession::handle_client_write,
+		async_write(_client_socket,
+			buffer(_proxy_buffer, bytes_transferred),
+			transfer_all(),
+			bind(&UserSession::handle_client_write,
 				shared_from_this(),
-				boost::asio::placeholders::error));
+				placeholders::error));
 	}
 	else {
-		cout << "error_handle_proxy_read\n\n"; // (label)
 		cerr << error.message() << endl;
 		close();
 	}
 }
 
-void UserSession::handle_client_write(const boost::system::error_code& error) {
+void UserSession::handle_client_write(const ErrorCode& error) noexcept {
 	if (!error) {
-		cout << "handle_client_write port_client: " << _client_socket.remote_endpoint().port() << "\n\n"; // (label)
-		_proxy_socket.async_read_some(boost::asio::buffer(_proxy_buffer, default_buffer_size),
-			boost::bind(&UserSession::handle_proxy_read,
+		_proxy_socket.async_read_some(buffer(_proxy_buffer, default_buffer_size),
+			bind(&UserSession::handle_proxy_read,
 				shared_from_this(),
-				boost::asio::placeholders::error,
-				boost::asio::placeholders::bytes_transferred));
+				placeholders::error,
+				placeholders::bytes_transferred));
 	}
 	else {
-		cout << "error_handle_client_write\n\n"; // (label)
 		cerr << error.message() << endl;
 		close();
 	}
 }
 
-void UserSession::close() {
+void UserSession::close() noexcept {
 	if (_client_socket.is_open()) {
-		cout << "close_client_socket port_client: " << _client_socket.remote_endpoint().port() << "\n\n"; // (label)
 		_client_socket.close();
 	}
 	if (_proxy_socket.is_open()) {
-		cout << "close_proxy_socket port_client: " << _proxy_socket.remote_endpoint().port() << "\n\n"; // (label)
 		_proxy_socket.close();
 	}
 }
