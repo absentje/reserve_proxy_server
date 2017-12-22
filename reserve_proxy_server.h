@@ -4,7 +4,6 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <string>
 #include <fstream>
-#include <exception>
 
 // BOOST includes
 #include <boost/asio.hpp>
